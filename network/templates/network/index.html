@@ -1,0 +1,24 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<button id="new-post">New Post</button>
+<form action="{% url 'index' %}" id="post-view" style="display:none" method="post">
+    {% csrf_token %}
+    <div>
+        {{ form }}
+    </div>
+    <div>
+        <input id= "submit-post" type="submit">
+    </div>
+</form>
+<div style="border:1px solid black;">
+    <ul style="list-style-type: none;">
+        {% for post in posts %}
+        <li> @{{ post.Owner }}</li>
+        <li>{{ post.Content }}</li>
+        <li>{{ post.Timestamp }}</li>
+        <li>likes TODO</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
