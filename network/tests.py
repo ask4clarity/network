@@ -1,7 +1,7 @@
 from sqlite3 import Timestamp
 from xxlimited import foo
 from django.test import Client, TestCase
-from .models import Post, User
+from .models import Post, User, Follow
 from selenium import webdriver
 import os
 import pathlib
@@ -15,12 +15,14 @@ def file_uri(filename):
 
 driver = webdriver.Chrome()
 
-class PostTestCase(TestCase):
+class ModelTestCase(TestCase):
 
     def setUp(self):
 
         test_user = User.objects.create(username="test_user")
+        test_user2 = User.objects.create(username="test_user2")
         Post.objects.create(Owner=test_user, Content="test_content")
+        Follow.objects.create(Owner=test_user, Target=test_user2)
 
     def test_content(self):
         test_user = User.objects.get(username="test_user")
@@ -36,6 +38,11 @@ class PostTestCase(TestCase):
         post = Post.objects.get(Owner=test_user)
         self.assertTrue(post.not_empty())
 
+    def test_not_same(self):
+        test_user = User.objects.get(username="test_user")
+        follow = Follow.objects.get(Owner=test_user)
+        self.assertTrue(follow.not_same())
+
     def test_index(self):
         c = Client()
         response = c.get("")
@@ -44,7 +51,7 @@ class PostTestCase(TestCase):
 
 class WebpageTests(unittest.TestCase):
 
-    def test_title(self):
+    def test_new_post(self):
         driver.get("http://127.0.0.1:8000/")
         open_form = driver.find_element_by_id("new-post")
         open_form.click()
@@ -53,3 +60,19 @@ class WebpageTests(unittest.TestCase):
         
         if __name__ == "__main__":
             unittest.main()
+
+    def test_user_link(self):
+        #page redirect works
+        driver.get("http://127.0.0.1:8000/")
+        user_direct = driver.find_element_by_id("user-link")
+        link = user_direct.get_attribute("href")
+        user_direct.click()
+        url = driver.current_url
+        self.assertEquals(link, url)
+
+        
+
+
+        
+
+    

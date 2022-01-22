@@ -1,6 +1,10 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
+<head>
+    <script src="{% static 'network/index.js' %}"></script>
+</head>
 <button id="new-post">New Post</button>
 <form action="{% url 'index' %}" id="post-view" style="display:none" method="post">
     {% csrf_token %}
@@ -14,7 +18,7 @@
 <div style="border:1px solid black;">
     <ul style="list-style-type: none;">
         {% for post in posts %}
-        <li> @{{ post.Owner }}</li>
+        <a id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
         <li>{{ post.Content }}</li>
         <li>{{ post.Timestamp }}</li>
         <li>likes TODO</li>

@@ -1,0 +1,35 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<script src="{% static 'network/user.js' %}"></script>
+<div style="float: right;">
+    {% if not following %}
+    <form action ="/{{ profile }}" method="post">
+        {% csrf_token %}
+        <input id="follow-button" type="submit" name="add" value="Follow"/>
+    </form>
+    {% else %}
+    <form action ="/{{ profile }}" method="post">
+        {% csrf_token %}
+        <input id="follow-button" type="submit" name="remove" value="Unfollow"/>
+    </form>
+    {% endif %}
+</div>
+<div>
+    <ul style="list-style-type: none; text-align: center;">
+        <li>Following:</li>
+        <li>Followers:</li>
+    </ul>
+</div>
+<div style="border:1px solid black;">
+    <ul style="list-style-type: none;">
+        {% for post in posts %}
+        <a href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
+        <li>{{ post.Content }}</li>
+        <li>{{ post.Timestamp }}</li>
+        <li>likes TODO</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
