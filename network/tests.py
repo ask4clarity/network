@@ -52,7 +52,14 @@ class ModelTestCase(TestCase):
 class WebpageTests(unittest.TestCase):
 
     def test_new_post(self):
-        driver.get("http://127.0.0.1:8000/")
+        #login
+        driver.get ("http://127.0.0.1:8000/login")
+        email = driver.find_element_by_id("user_n")
+        email.send_keys("josh")
+        password = driver.find_element_by_id("pw")
+        password.send_keys("hello")
+        driver.find_element_by_id("login").click()
+        #open form 
         open_form = driver.find_element_by_id("new-post")
         open_form.click()
         form = driver.find_element_by_id("post-view")
@@ -62,13 +69,23 @@ class WebpageTests(unittest.TestCase):
             unittest.main()
 
     def test_user_link(self):
+        #login
+        driver.get ("http://127.0.0.1:8000/login")
+        email = driver.find_element_by_id("user_n")
+        email.send_keys("josh")
+        password = driver.find_element_by_id("pw")
+        password.send_keys("hello")
+        driver.find_element_by_id("login").click()
         #page redirect works
-        driver.get("http://127.0.0.1:8000/")
         user_direct = driver.find_element_by_id("user-link")
         link = user_direct.get_attribute("href")
         user_direct.click()
         url = driver.current_url
         self.assertEquals(link, url)
+
+      
+        
+
 
         
 
