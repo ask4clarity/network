@@ -103,3 +103,14 @@ def user(request, profile):
         "profile": profile,
         "following": follows 
     })
+
+def following(request):
+    current_user = get_object_or_404(User, username=request.user.username)
+    following = Follow.objects.filter(Owner=current_user)
+    following_posts = []
+    for f in following:
+        prof_posts = Post.objects.filter(Owner=f.Target)
+        following_posts.extend(prof_posts)
+    return render(request, "network/following.html", {
+        "posts": following_posts
+    })

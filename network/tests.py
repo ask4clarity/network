@@ -82,6 +82,7 @@ class WebpageTests(unittest.TestCase):
         user_direct.click()
         url = driver.current_url
         self.assertEquals(link, url)
+        #Build LiveServerTestCase test for follow button
 
       
         
