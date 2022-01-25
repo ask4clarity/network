@@ -1,19 +1,22 @@
 from sqlite3 import Timestamp
 from xxlimited import foo
 from django.test import Client, TestCase
+from django.urls import reverse
 from .models import Post, User, Follow
 from selenium import webdriver
 import os
 import pathlib
 import unittest 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+import time 
 
 def file_uri(filename):
     return pathlib.Path(os.path.abspath(filename)).as_uri()
 
-driver = webdriver.Chrome()
+# driver = webdriver.Chrome()
 
 class ModelTestCase(TestCase):
 
@@ -49,44 +52,41 @@ class ModelTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["posts"].count(), 1)
 
-class WebpageTests(unittest.TestCase):
+class SeleniumTests(StaticLiveServerTestCase):
 
-    def test_new_post(self):
+    def setUp(self):
+        self.browser = webdriver.Chrome()
+        #must use create_user to generate hash
+        User.objects.create_user(username="test_user", password="test_pw")
+        test_user2 = User.objects.create_user(username="test_user2")
+        Post.objects.create(Owner=test_user2, Content="test_content")
         #login
-        driver.get ("http://127.0.0.1:8000/login")
-        email = driver.find_element_by_id("user_n")
-        email.send_keys("josh")
-        password = driver.find_element_by_id("pw")
-        password.send_keys("hello")
-        driver.find_element_by_id("login").click()
-        #open form 
-        open_form = driver.find_element_by_id("new-post")
-        open_form.click()
-        form = driver.find_element_by_id("post-view")
-        self.assertTrue(form.is_displayed())
-        
-        if __name__ == "__main__":
-            unittest.main()
+        self.browser.get(self.live_server_url + reverse('login'))
+        username = self.browser.find_element_by_id("user_n")
+        username.send_keys("test_user")
+        password = self.browser.find_element_by_id("pw")
+        password.send_keys("test_pw")
+        self.browser.find_element_by_id("login").click()
+
+    def tearDown(self):
+        self.browser.quit()
+    
+    def test_login(self):
+        self.assertEquals(self.browser.current_url, self.live_server_url + reverse('index'))
 
     def test_user_link(self):
-        #login
-        driver.get ("http://127.0.0.1:8000/login")
-        email = driver.find_element_by_id("user_n")
-        email.send_keys("josh")
-        password = driver.find_element_by_id("pw")
-        password.send_keys("hello")
-        driver.find_element_by_id("login").click()
-        #page redirect works
-        user_direct = driver.find_element_by_id("user-link")
+        user_direct = self.browser.find_element_by_id("user-link")
         link = user_direct.get_attribute("href")
         user_direct.click()
-        url = driver.current_url
+        url = self.browser.current_url
         self.assertEquals(link, url)
-        #Build LiveServerTestCase test for follow button
-
-      
+    
+    def test_new_post(self):
+        open_form = self.browser.find_element_by_id("new-post")
+        open_form.click()
+        form = self.browser.find_element_by_id("post-view")
+        self.assertTrue(form.is_displayed())
         
-
 
         
 
