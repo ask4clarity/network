@@ -18,10 +18,17 @@
 <div style="border:1px solid black;">
     <ul style="list-style-type: none;">
         {% for post in posts %}
-        <a id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
-        <li>{{ post.Content }}</li>
-        <li>{{ post.Timestamp }}</li>
-        <li>likes TODO</li>
+            <a id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
+            <li id="post-content-{{ post.id }}">{{ post.Content }}</li>
+            <li>{{ post.Timestamp }}</li>
+            <li>likes TODO</li>
+            {% if user.is_authenticated %}
+                {% if request.user == post.Owner %}
+                <button id='edit-button' onclick="edit('{{ post.id }}')">Edit</button>
+                {% endif %}
+            {% endif %}
+            <textarea id="edit-text-{{ post.id }}" style="display:none;"></textarea>
+            <button id="edit-button-{{ post.id }}" style="display:none;">Save</button>
         {% endfor %}
     </ul>
 </div>
