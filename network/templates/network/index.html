@@ -21,7 +21,11 @@
             <a id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
             <li id="post-content-{{ post.id }}">{{ post.Content }}</li>
             <li>{{ post.Timestamp }}</li>
-            <li>likes TODO</li>
+            {% if request.user not in post.Likes.all %}
+                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">Like</button>
+            {% else %}
+                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">Like</button>
+            {% endif %}
             {% if user.is_authenticated %}
                 {% if request.user == post.Owner %}
                 <button id='edit-button' onclick="edit('{{ post.id }}')">Edit</button>

@@ -18,6 +18,7 @@ class PostForm(forms.ModelForm):
 
 
 def index(request):
+    posts = Post.objects.all()
     if request.method == "POST":
         #Submit the user post 
         p = PostForm(request.POST)
@@ -28,9 +29,8 @@ def index(request):
             p.save()
         else:
             messages.error(request, 'Error saving form')
-
     return render(request, "network/index.html", {
-    "posts": Post.objects.all(),
+    "posts": posts,
     "form": PostForm() 
     })
     
@@ -120,11 +120,25 @@ def following(request):
 @csrf_exempt
 def edit(request, id):
     post = Post.objects.get(id=id)
-    print(post)
 
     if request.method == "PUT":
         data = json.loads(request.body)
         if data.get("content") is not None:
             post.Content = data["content"]
+        post.save()
+        return HttpResponse(status=204)
+
+@csrf_exempt
+def like(request, id):
+    post = Post.objects.get(id=id)
+    user = User.objects.get(username=request.user.username)
+
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        print(data.get("like"))
+        if data.get("like"):
+            post.Likes.add(user)
+        else:
+            post.Likes.remove(user)
         post.save()
         return HttpResponse(status=204)

@@ -31,3 +31,28 @@ function edit(id) {
     });
  
 }
+
+function like(id) {
+
+    like_button = document.getElementById(`like-button-${id}`);
+    
+    if (like_button.style.backgroundColor == 'white') {
+        fetch(`/like/${id}`, {
+            method:'PUT',
+            body: JSON.stringify({
+                like: true
+            })
+        });
+        like_button.style.backgroundColor = 'red';
+    }
+    else {
+        fetch(`/like/${id}`, {
+            method:'PUT',
+            body: JSON.stringify({
+                like: false
+            })
+        });
+
+        like_button.style.backgroundColor = 'white';
+    }
+}

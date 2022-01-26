@@ -10,6 +10,7 @@ class Post(models.Model):
     Owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='poster')
     Content = models.TextField(max_length=160)
     Timestamp = models.DateTimeField(auto_now_add=True)
+    Likes = models.ManyToManyField(User, related_name="liker", null=True)
 
     def __str__(self):
         return f" @{self.Owner} posted {self.Content} at {self.Timestamp}"
@@ -34,3 +35,4 @@ class Follow(models.Model):
 
     def not_same(self):
         return self.Owner != self.Target
+
