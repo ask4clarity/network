@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from django import forms 
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from .models import User, Post, Follow
 
@@ -114,3 +116,15 @@ def following(request):
     return render(request, "network/following.html", {
         "posts": following_posts
     })
+
+@csrf_exempt
+def edit(request, id):
+    post = Post.objects.get(id=id)
+    print(post)
+
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        if data.get("content") is not None:
+            post.Content = data["content"]
+        post.save()
+        return HttpResponse(status=204)

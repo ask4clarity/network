@@ -17,6 +17,14 @@ class Post(models.Model):
     def not_empty(self):
         return len(self.Content) > 0
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "owner": self.Owner.username,
+            "content": self.Content,
+            "timestamp": self.Timestamp
+        }
+
 class Follow(models.Model):
     Owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
     Target = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='followed')
