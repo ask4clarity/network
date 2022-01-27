@@ -18,12 +18,16 @@ class Post(models.Model):
     def not_empty(self):
         return len(self.Content) > 0
 
+    def total_likes(self):
+        return self.Likes.count()    
+
     def serialize(self):
         return {
             "id": self.id,
             "owner": self.Owner.username,
             "content": self.Content,
-            "timestamp": self.Timestamp
+            "timestamp": self.Timestamp,
+            "likes": self.total_likes()
         }
 
 class Follow(models.Model):

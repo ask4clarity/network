@@ -32,21 +32,23 @@ function edit(id) {
  
 }
 
-function like(id) {
+async function like(id) {
 
     like_button = document.getElementById(`like-button-${id}`);
     
     if (like_button.style.backgroundColor == 'white') {
-        fetch(`/like/${id}`, {
+        await fetch(`/like/${id}`, {
             method:'PUT',
             body: JSON.stringify({
                 like: true
             })
+            
         });
+
         like_button.style.backgroundColor = 'red';
     }
     else {
-        fetch(`/like/${id}`, {
+        await fetch(`/like/${id}`, {
             method:'PUT',
             body: JSON.stringify({
                 like: false
@@ -54,5 +56,14 @@ function like(id) {
         });
 
         like_button.style.backgroundColor = 'white';
+
+
     }
+
+    await fetch(`/like/${id}`)
+    .then(response => response.json())
+    .then(post => {
+        like_button.innerHTML = post.likes;
+    });
+
 }

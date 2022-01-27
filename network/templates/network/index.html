@@ -22,9 +22,9 @@
             <li id="post-content-{{ post.id }}">{{ post.Content }}</li>
             <li>{{ post.Timestamp }}</li>
             {% if request.user not in post.Likes.all %}
-                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">Like</button>
+                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">{{ post.Likes.all.count }}</button>
             {% else %}
-                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">Like</button>
+                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">{{ post.Likes.all.count }}</button>
             {% endif %}
             {% if user.is_authenticated %}
                 {% if request.user == post.Owner %}

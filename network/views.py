@@ -8,6 +8,7 @@ from django.contrib import messages
 from django import forms 
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.http import JsonResponse
 
 from .models import User, Post, Follow
 
@@ -132,6 +133,9 @@ def edit(request, id):
 def like(request, id):
     post = Post.objects.get(id=id)
     user = User.objects.get(username=request.user.username)
+
+    if request.method == "GET":
+        return JsonResponse(post.serialize(), safe=False)
 
     if request.method == "PUT":
         data = json.loads(request.body)
