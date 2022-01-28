@@ -4,7 +4,7 @@
 <div style="border:1px solid black;">
     <ul style="list-style-type: none;">
         {% for post in posts %}
-        <a id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
+        <a class="user-link" id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
         <li>{{ post.Content }}</li>
         <li>{{ post.Timestamp }}</li>
         <li>likes TODO</li>

@@ -1,9 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-
-    document.getElementById('new-post').onclick = post;
-
-});
-
 function post() {
 
     document.getElementById('post-view').style.display = 'block';
@@ -25,7 +19,7 @@ function edit(id) {
             })
         });
         edit_text.style.display = 'none';
-        edit_button.style.display = "none";
+        edit_button.style.display = 'none';
 
         document.getElementById(`post-content-${id}`).innerHTML = edit_text.value;
     });

@@ -5,7 +5,7 @@
 <head>
     <script src="{% static 'network/index.js' %}"></script>
 </head>
-<button id="new-post">New Post</button>
+<button onclick="post()" id="new-post">New Post</button>
 <form action="{% url 'index' %}" id="post-view" style="display:none" method="post">
     {% csrf_token %}
     <div>
@@ -18,7 +18,7 @@
 <div style="border:1px solid black;">
     <ul style="list-style-type: none;">
         {% for post in posts %}
-            <a id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
+            <a class="user-link" id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
             <li id="post-content-{{ post.id }}">{{ post.Content }}</li>
             <li>{{ post.Timestamp }}</li>
             {% if request.user not in post.Likes.all %}

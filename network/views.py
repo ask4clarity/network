@@ -15,7 +15,7 @@ from .models import User, Post, Follow
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ['Owner']
+        exclude = ['Owner', 'Likes']
 
 
 def index(request):
@@ -93,6 +93,8 @@ def user(request, profile):
     follower = User.objects.get(username=request.user.username)
     follows = Follow.objects.filter(Owner=follower, Target=owner).first()
     posts = owner.poster.all()
+    follow_count = Follow.objects.filter(Target=owner).count
+    following_count = Follow.objects.filter(Owner=owner).count
     #follow or unfollow
     if request.method == "POST":
         if 'add' in request.POST:
@@ -104,7 +106,11 @@ def user(request, profile):
     return render(request, "network/user.html", {
         "posts": posts,
         "profile": profile,
-        "following": follows 
+        "following": follows,
+        "follow_count": follow_count,
+        "following_count": following_count,
+        "owner": owner,
+        "user": follower
     })
 
 def following(request):

@@ -2,30 +2,33 @@
 {% load static %}
 
 {% block body %}
-<script src="{% static 'network/user.js' %}"></script>
-<div style="float: right;">
-    {% if not following %}
-    <form action ="/{{ profile }}" method="post">
-        {% csrf_token %}
-        <input id="follow-button" type="submit" name="add" value="Follow"/>
-    </form>
-    {% else %}
-    <form action ="/{{ profile }}" method="post">
-        {% csrf_token %}
-        <input id="follow-button" type="submit" name="remove" value="Unfollow"/>
-    </form>
-    {% endif %}
-</div>
+<script src="{% static 'network/index.js' %}"></script>
+
+{% if user.username != owner.username %}
+    <div style="float: right;">
+        {% if not following %}
+        <form action ="/{{ profile }}" method="post">
+            {% csrf_token %}
+            <input id="follow-button" type="submit" name="add" value="Follow"/>
+        </form>
+        {% else %}
+        <form action ="/{{ profile }}" method="post">
+            {% csrf_token %}
+            <input id="follow-button" type="submit" name="remove" value="Unfollow"/>
+        </form>
+        {% endif %}
+    </div>
+{% endif %}
 <div>
     <ul style="list-style-type: none; text-align: center;">
-        <li>Following:</li>
-        <li>Followers:</li>
+        <li>Followers: {{ follow_count }}</li>
+        <li>Following: {{ following_count }}</li>
     </ul>
 </div>
 <div style="border:1px solid black;">
     <ul style="list-style-type: none;">
         {% for post in posts %}
-        <a href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
+        <a class="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
         <li>{{ post.Content }}</li>
         <li>{{ post.Timestamp }}</li>
         <li>likes TODO</li>
