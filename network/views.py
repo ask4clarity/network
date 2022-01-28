@@ -9,6 +9,7 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 from .models import User, Post, Follow
 
@@ -20,6 +21,9 @@ class PostForm(forms.ModelForm):
 
 def index(request):
     posts = Post.objects.all().order_by('id').reverse()
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     if request.method == "POST":
         #Submit the user post 
         p = PostForm(request.POST)
@@ -31,8 +35,8 @@ def index(request):
         else:
             messages.error(request, 'Error saving form')
     return render(request, "network/index.html", {
-    "posts": posts,
-    "form": PostForm() 
+    "form": PostForm(), 
+    "page_obj": page_obj
     })
     
 
@@ -93,6 +97,9 @@ def user(request, profile):
     follower = User.objects.get(username=request.user.username)
     follows = Follow.objects.filter(Owner=follower, Target=owner).first()
     posts = owner.poster.all().order_by('id').reverse()
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     follow_count = Follow.objects.filter(Target=owner).count
     following_count = Follow.objects.filter(Owner=owner).count
     #follow or unfollow
@@ -104,7 +111,7 @@ def user(request, profile):
             follows.delete()
         return redirect(f"/{profile}")
     return render(request, "network/user.html", {
-        "posts": posts,
+        "page_obj": page_obj,
         "profile": profile,
         "following": follows,
         "follow_count": follow_count,

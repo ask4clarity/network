@@ -17,7 +17,7 @@
 </form>
 <div style="border:1px solid black;">
     <ul style="list-style-type: none;">
-        {% for post in posts %}
+        {% for post in page_obj %}
             <a class="user-link" id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
             <li id="post-content-{{ post.id }}">{{ post.Content }}</li>
             <li>{{ post.Timestamp }}</li>
@@ -34,6 +34,31 @@
             <textarea id="edit-text-{{ post.id }}" style="display:none;"></textarea>
             <button id="edit-button-{{ post.id }}" style="display:none;">Save</button>
         {% endfor %}
+    </ul>
+</div>
+<div class="container">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a href="?page=1" class="page-link">&laquo; First</a></li>
+            <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link">&laquo; First</a></li>
+        <li class="page-item disabled"><a class="page-link">Previous</a></li>
+        {% endif %}
+            
+
+        {% if page_obj.number %}
+        <li class="page-item"><a class="page-link">{{ page_obj.number }}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link">0</a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+        <li class="page-item"><a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Last &raquo;</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link">Next</a></li>
+        <li class="page-item disabled"><a class="page-link">Last &raquo;</a></li>
+        {% endif %}
     </ul>
 </div>
 {% endblock %}
