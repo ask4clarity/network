@@ -19,7 +19,7 @@ class PostForm(forms.ModelForm):
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('id').reverse()
     if request.method == "POST":
         #Submit the user post 
         p = PostForm(request.POST)
@@ -92,7 +92,7 @@ def user(request, profile):
     owner = get_object_or_404(User, username=profile)
     follower = User.objects.get(username=request.user.username)
     follows = Follow.objects.filter(Owner=follower, Target=owner).first()
-    posts = owner.poster.all()
+    posts = owner.poster.all().order_by('id').reverse()
     follow_count = Follow.objects.filter(Target=owner).count
     following_count = Follow.objects.filter(Owner=owner).count
     #follow or unfollow
