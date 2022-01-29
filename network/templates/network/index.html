@@ -12,7 +12,8 @@
         {{ form }}
     </div>
     <div>
-        <input id= "submit-post" type="submit">
+        <button id="cancel-button1" type="button">Cancel</button>
+        <input id="submit-post" type="submit">
     </div>
 </form>
 <div style="border:1px solid black;">
@@ -28,11 +29,14 @@
             {% endif %}
             {% if user.is_authenticated %}
                 {% if request.user == post.Owner %}
-                <button id='edit-button' onclick="edit('{{ post.id }}')">Edit</button>
+                <button id='edit-button-{{ post.id }}' onclick="edit('{{ post.id }}')">Edit</button>
                 {% endif %}
             {% endif %}
-            <textarea id="edit-text-{{ post.id }}" style="display:none;"></textarea>
-            <button id="edit-button-{{ post.id }}" style="display:none;">Save</button>
+            <div id="edit-view-{{ post.id }}" style="display:none;">
+                <textarea id="edit-text-{{ post.id }}"></textarea>
+                <button id="cancel-button-{{ post.id }}" type="button">Cancel</button>
+                <button id="save-button-{{ post.id }}">Save</button>
+            </div>
         {% endfor %}
     </ul>
 </div>
