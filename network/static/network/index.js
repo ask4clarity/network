@@ -18,14 +18,17 @@ function edit(id) {
     save_button = document.getElementById(`save-button-${id}`);
     edit_view = document.getElementById(`edit-view-${id}`);
     cancel = document.getElementById(`cancel-button-${id}`)
+    post_content = document.getElementById(`post-content-${id}`)
 
     edit_view.style.display = 'block';
     edit_button.style.display = 'none';
+    post_content.style.display = 'none';
 
     cancel.addEventListener("click", () => {
 
         document.getElementById(`edit-view-${id}`).style.display = 'none';
         edit_button.style.display = 'block';
+        post_content.style.display = 'block';
 
     });
 
@@ -38,6 +41,7 @@ function edit(id) {
         });
         edit_view.style.display = 'none';
         edit_button.style.display = 'block';
+        post_content.style.display = 'block';
 
         document.getElementById(`post-content-${id}`).innerHTML = edit_text.value;
     });

@@ -5,7 +5,8 @@
 <head>
     <script src="{% static 'network/index.js' %}"></script>
 </head>
-<button onclick="post()" id="new-post">New Post</button>
+<div class="justify-content-center">
+<button class="btn btn-primary" onclick="post()" id="new-post">New Post</button>
 <form action="{% url 'index' %}" id="post-view" style="display:none" method="post">
     {% csrf_token %}
     <div>
@@ -16,31 +17,37 @@
         <input id="submit-post" type="submit">
     </div>
 </form>
+</div>
 <div style="border:1px solid black;">
-    <ul style="list-style-type: none;">
         {% for post in page_obj %}
-            <a class="user-link" id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
-            <li id="post-content-{{ post.id }}">{{ post.Content }}</li>
-            <li>{{ post.Timestamp }}</li>
-            {% if request.user not in post.Likes.all %}
-                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">{{ post.Likes.all.count }}</button>
-            {% else %}
-                <button id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">{{ post.Likes.all.count }}</button>
-            {% endif %}
-            {% if user.is_authenticated %}
-                {% if request.user == post.Owner %}
-                <button id='edit-button-{{ post.id }}' onclick="edit('{{ post.id }}')">Edit</button>
+            <div class="card mx-auto" style="width: 20rem;">
+                <div class="card-header">
+                <a class="user-link" id="user-link" href="/{{ post.Owner }}">@{{ post.Owner }}</a><small> - {{ post.Timestamp }}</small>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-center" id="post-content-{{ post.id }}">{{ post.Content }}</p>
+                    <div class="card-body" id="edit-view-{{ post.id }}" style="display:none;">
+                        <textarea id="edit-text-{{ post.id }}"></textarea>
+                        <button id="cancel-button-{{ post.id }}" type="button">Cancel</button>
+                        <button id="save-button-{{ post.id }}">Save</button>
+                    </div>
+                </div>
+                <div class="card-footer flex">
+                    {% if request.user not in post.Likes.all %}
+                    <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">{{ post.Likes.all.count }}</button>
+                {% else %}
+                    <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">{{ post.Likes.all.count }}</button>
                 {% endif %}
-            {% endif %}
-            <div id="edit-view-{{ post.id }}" style="display:none;">
-                <textarea id="edit-text-{{ post.id }}"></textarea>
-                <button id="cancel-button-{{ post.id }}" type="button">Cancel</button>
-                <button id="save-button-{{ post.id }}">Save</button>
+                {% if user.is_authenticated %}
+                    {% if request.user == post.Owner %}
+                    <button class="flex-child" id='edit-button-{{ post.id }}' onclick="edit('{{ post.id }}')">Edit</button>
+                    {% endif %}
+                {% endif %}
+                </div>
             </div>
         {% endfor %}
-    </ul>
 </div>
-<div class="container">
+<div>
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
             <li class="page-item"><a href="?page=1" class="page-link">&laquo; First</a></li>
