@@ -18,7 +18,6 @@
     </div>
 </form>
 </div>
-<div style="border:1px solid black;">
         {% for post in page_obj %}
             <div class="card mx-auto" style="width: 20rem;">
                 <div class="card-header">
@@ -34,19 +33,18 @@
                 </div>
                 <div class="card-footer flex">
                     {% if request.user not in post.Likes.all %}
-                    <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">{{ post.Likes.all.count }}</button>
-                {% else %}
-                    <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">{{ post.Likes.all.count }}</button>
-                {% endif %}
-                {% if user.is_authenticated %}
+                        <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">{{ post.Likes.all.count }}</button>
+                    {% else %}
+                        <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">{{ post.Likes.all.count }}</button>
+                    {% endif %}
+                    {% if user.is_authenticated %}
                     {% if request.user == post.Owner %}
-                    <button class="flex-child" id='edit-button-{{ post.id }}' onclick="edit('{{ post.id }}')">Edit</button>
+                        <button class="flex-child" id='edit-button-{{ post.id }}' onclick="edit('{{ post.id }}')">Edit</button>
                     {% endif %}
                 {% endif %}
                 </div>
             </div>
         {% endfor %}
-</div>
 <div>
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}

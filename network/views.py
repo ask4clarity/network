@@ -123,12 +123,17 @@ def user(request, profile):
 def following(request):
     current_user = get_object_or_404(User, username=request.user.username)
     following = Follow.objects.filter(Owner=current_user)
+    posts = Post.objects.all().order_by('id').reverse()
     following_posts = []
-    for f in following:
-        prof_posts = Post.objects.filter(Owner=f.Target)
-        following_posts.extend(prof_posts)
+    for p in posts:
+        for f in following:
+            if f.Target == p.Owner:
+                following_posts.append(p)
+    paginator = Paginator(following_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/following.html", {
-        "posts": following_posts
+            "page_obj": page_obj
     })
 
 @csrf_exempt

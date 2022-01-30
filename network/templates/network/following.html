@@ -1,14 +1,55 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-<div style="border:1px solid black;">
-    <ul style="list-style-type: none;">
-        {% for post in posts %}
-        <a class="user-link" id="user-link" href="/{{ post.Owner }}"><li> @{{ post.Owner }}</li></a>
-        <li>{{ post.Content }}</li>
-        <li>{{ post.Timestamp }}</li>
-        <li>likes TODO</li>
-        {% endfor %}
+<head>
+    <script src="{% static 'network/index.js' %}"></script>
+</head>
+{% for post in page_obj %}
+<div class="card mx-auto" style="width: 20rem;">
+    <div class="card-header">
+    <a class="user-link" id="user-link" href="/{{ post.Owner }}">@{{ post.Owner }}</a><small> - {{ post.Timestamp }}</small>
+    </div>
+    <div class="card-body">
+        <p class="card-text text-center" id="post-content-{{ post.id }}">{{ post.Content }}</p>
+        <div class="card-body" id="edit-view-{{ post.id }}" style="display:none;">
+            <textarea id="edit-text-{{ post.id }}"></textarea>
+            <button id="cancel-button-{{ post.id }}" type="button">Cancel</button>
+            <button id="save-button-{{ post.id }}">Save</button>
+        </div>
+    </div>
+    <div class="card-footer flex">
+        {% if request.user not in post.Likes.all %}
+            <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:white;">{{ post.Likes.all.count }}</button>
+        {% else %}
+            <button class="flex-child" id="like-button-{{ post.id }}" onclick="like('{{ post.id }}')" style="background-color:red;">{{ post.Likes.all.count }}</button>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+<div>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a href="?page=1" class="page-link">&laquo; First</a></li>
+            <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link">&laquo; First</a></li>
+        <li class="page-item disabled"><a class="page-link">Previous</a></li>
+        {% endif %}
+            
+
+        {% if page_obj.number %}
+        <li class="page-item"><a class="page-link">{{ page_obj.number }}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link">0</a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+        <li class="page-item"><a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Last &raquo;</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link">Next</a></li>
+        <li class="page-item disabled"><a class="page-link">Last &raquo;</a></li>
+        {% endif %}
     </ul>
 </div>
 {% endblock %}
