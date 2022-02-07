@@ -11,6 +11,10 @@ function post() {
 
 }
 
+function redirect() {
+    location.href = "/login";
+}
+
 function edit(id) {
 
     edit_text = document.getElementById(`edit-text-${id}`);

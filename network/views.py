@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Post, Follow
 
@@ -25,15 +26,18 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     if request.method == "POST":
-        #Submit the user post 
-        p = PostForm(request.POST)
-        if p.is_valid(): 
-            new_post = p.save(commit=False)
-            new_post.Owner = User.objects.get(username=request.user.username)
-            new_post.save()
-            p.save()
+        if request.user.is_authenticated:
+            #Submit the user post 
+            p = PostForm(request.POST)
+            if p.is_valid(): 
+                new_post = p.save(commit=False)
+                new_post.Owner = User.objects.get(username=request.user.username)
+                new_post.save()
+                p.save()
+            else:
+                messages.error(request, 'Error saving form')
         else:
-            messages.error(request, 'Error saving form')
+            return HttpResponseRedirect(reverse("login"))
     return render(request, "network/index.html", {
     "form": PostForm(), 
     "page_obj": page_obj
@@ -92,6 +96,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
+@login_required(login_url='/login')
 def user(request, profile):
     owner = get_object_or_404(User, username=profile)
     follower = User.objects.get(username=request.user.username)
@@ -120,6 +125,7 @@ def user(request, profile):
         "user": follower
     })
 
+@login_required(login_url='/login')
 def following(request):
     current_user = get_object_or_404(User, username=request.user.username)
     following = Follow.objects.filter(Owner=current_user)
